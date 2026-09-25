@@ -1,0 +1,37 @@
+{
+  "bucket_seconds": 10,
+  "history_buckets": 6,
+  "future_buckets": 3,
+  "feature_columns": [
+    "FlowCount",
+    "FlowDurationMean",
+    "FwdPktsSum",
+    "BwdPktsSum",
+    "FwdBytesSum",
+    "BwdBytesSum",
+    "PktLenMean",
+    "FlowBytesRateMean",
+    "FlowPktsRateMean",
+    "SYNCount",
+    "RSTCount",
+    "ACKCount",
+    "FINCount",
+    "PSHCount",
+    "TCPFlows",
+    "UDPFlows",
+    "UniqueDstPorts",
+    "UniqueProtocols"
+  ],
+  "num_input_features": 108,
+  "classes": [
+    "Benign",
+    "DDOS attack-HOIC",
+    "DDOS attack-LOIC-UDP",
+    "DoS attacks-GoldenEye",
+    "DoS attacks-Hulk",
+    "DoS attacks-SlowHTTPTest",
+    "DoS attacks-Slowloris",
+    "FTP-BruteForce",
+    "SSH-Bruteforce"
+  ]
+}

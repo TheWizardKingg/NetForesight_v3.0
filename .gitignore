@@ -1,0 +1,28 @@
+# Virtual Environment
+venv/
+env/
+ENV/
+*.venv
+
+# Python Cache & Compiled Files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Large Dataset Files & Binary Arrays
+cic.csv
+data/
+*.csv
+*.npy
+*.parquet
+*.h5
+
+# OS / IDE Generated Files
+.DS_Store
+.vscode/
+.idea/
+
+# Saved Model Weights / Checkpoints (Optional)
+# Uncomment the lines below if you don't want to push heavy .pkl or .pt files to GitHub:
+# *.pkl
+# *.pt

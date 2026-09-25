@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetForeSight — Predictive Cyber Defence</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+<div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
+<div class="bg-sheen"></div>
+<div id="toastStack" aria-live="polite"></div>
+
+<!-- ============ NAV BAR ============ -->
+<header class="glass site-header border-b border-purple-500/15 sticky top-0 z-50">
+    <div class="header-inner max-w-7xl mx-auto px-6 py-4 flex items-center justify-between" style="transition: padding 0.35s ease;">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-purple-900/60 border border-purple-500/30 flex items-center justify-center glow-purple">
+                <span class="text-xl">🛡️</span>
+            </div>
+            <div class="heading-font text-lg font-bold tracking-wide">
+                <span class="text-white">Net</span><span style="background: linear-gradient(135deg,#c084fc,#7c3aed); -webkit-background-clip:text; background-clip:text; color:transparent;">ForeSight</span>
+            </div>
+        </div>
+
+        <nav class="hidden md:flex items-center gap-8">
+            <a class="nav-link text-sm" href="#dashboard">Dashboard</a>
+            <a class="nav-link text-sm" href="#prediction">AI Prediction</a>
+            <a class="nav-link text-sm" href="#mitre">MITRE ATT&CK</a>
+            <a class="nav-link text-sm" href="#traffic-report">Traffic Report</a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+            <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 glass rounded-lg">
+                <span id="wsStatusDot" class="w-2 h-2 rounded-full bg-emerald-400 pulse-glow"></span>
+                <span id="trafficSource" class="text-xs nav-link">CONNECTING...</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ============ HERO SECTION ============ -->
+<section class="max-w-7xl mx-auto px-6 pt-16 pb-20 relative">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="relative z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 glass rounded-full mb-6">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 pulse-glow"></span>
+                <span class="text-xs nav-link tracking-widest">SIH PROBLEM STATEMENT · PS26153</span>
+            </div>
+            <h1 class="heading-font text-5xl lg:text-6xl font-bold leading-tight text-white mb-6" style="letter-spacing:0.01em;">
+                Predict The <span class="text-glow-purple" style="color: var(--purple-bright);">Next Attack</span> Before It Happens
+            </h1>
+            <p class="text-base text-purple-200/60 leading-relaxed mb-8 max-w-lg" style="font-weight:300;">
+                NetForeSight continuously observes network behaviour, forecasts the likely next attack stage using AI, and maps it directly to the MITRE ATT&CK framework — giving analysts a visible warning before the threat progresses.
+            </p>
+        </div>
+
+        <div class="relative h-96 hidden lg:block">
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="orbit-ring w-72 h-72 spin-slow"></div>
+                <div class="orbit-ring w-52 h-52" style="animation: spinSlow 15s linear infinite reverse;"></div>
+                <div class="relative w-36 h-36 rounded-2xl glass-strong flex items-center justify-center glow-purple overflow-hidden">
+                    <span class="text-6xl">⚡</span>
+                </div>
+                <div class="node-dot float" style="top: 10%; left: 20%;"></div>
+                <div class="node-dot float-delay" style="top: 70%; left: 15%;"></div>
+                <div class="node-dot float-delay2" style="top: 20%; left: 80%;"></div>
+                <div class="node-dot float" style="top: 75%; left: 78%;"></div>
+                <svg class="absolute inset-0 w-full h-full" style="pointer-events:none;">
+                    <line x1="20%" y1="10%" x2="50%" y2="50%" stroke="rgba(168,85,247,0.3)" stroke-width="1" class="flow-line"/>
+                    <line x1="15%" y1="70%" x2="50%" y2="50%" stroke="rgba(129, 140, 248,0.3)" stroke-width="1" class="flow-line"/>
+                    <line x1="80%" y1="20%" x2="50%" y2="50%" stroke="rgba(168,85,247,0.3)" stroke-width="1" class="flow-line"/>
+                    <line x1="78%" y1="75%" x2="50%" y2="50%" stroke="rgba(129, 140, 248,0.3)" stroke-width="1" class="flow-line"/>
+                </svg>
+            </div>
+            <div class="absolute top-2 left-0 glass rounded-lg px-4 py-3 float glow-cyan">
+                <div class="text-xs text-purple-300/70 nav-link">Detection Accuracy</div>
+                <div class="display-font text-xl font-bold text-indigo-300" id="heroAccuracy">98.4%</div>
+            </div>
+            <div class="absolute bottom-6 left-4 glass rounded-lg px-4 py-3 float-delay glow-purple">
+                <div class="text-xs text-purple-300/70 nav-link">Forecast Horizon</div>
+                <div class="display-font text-xl font-bold text-purple-300">+2 Stages</div>
+            </div>
+            <div class="absolute top-8 right-0 glass rounded-lg px-4 py-3 float-delay2 glow-purple">
+                <div class="text-xs text-purple-300/70 nav-link">MITRE Coverage</div>
+                <div class="display-font text-xl font-bold text-white">5 Tactics</div>
+            </div>
+            <div class="absolute bottom-8 right-0 glass rounded-lg px-4 py-3 float-delay3 glow-cyan">
+                <div class="text-xs text-purple-300/70 nav-link">Avg Response Time</div>
+                <div class="display-font text-xl font-bold text-indigo-300">2.9s</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ MAIN DASHBOARD ============ -->
+<main id="dashboard" class="max-w-7xl mx-auto px-6 pb-16 space-y-6">
+    <div id="dashboardAnchor" class="flex items-center gap-3 mb-2">
+        <div class="w-1 h-6 bg-gradient-to-b from-purple-500 to-indigo-400 rounded-full"></div>
+        <h2 class="heading-font text-2xl font-bold text-white tracking-wide">SOC Command Dashboard</h2>
+    </div>
+
+    <!-- ===== ROW 1 ===== -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="glass rounded-xl p-6 card-hover glow-green" id="statusCardGlow">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xs nav-link tracking-widest">NETWORK STATUS</h3>
+                <span class="text-xl">📡</span>
+            </div>
+            <div class="flex items-center gap-3 mb-3">
+                <span id="statusIndicator" class="w-4 h-4 rounded-full bg-emerald-400 pulse-glow"></span>
+                <span id="statusLabel" class="heading-font text-2xl font-bold text-emerald-400">MONITORING</span>
+            </div>
+            <p class="text-xs text-purple-200/50 leading-relaxed mb-3" id="statusDesc">All systems operating normally</p>
+            <div class="pt-3 border-t border-purple-500/10 flex justify-between items-center">
+                <span class="text-xs text-purple-300/50 nav-link">RISK SCORE</span>
+                <span class="display-font text-sm font-bold text-purple-300" id="riskScoreVal">0</span>
+            </div>
+        </div>
+
+        <div class="glass rounded-xl p-6 card-hover glow-cyan">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xs nav-link tracking-widest">TRAFFIC MONITORING</h3>
+                <span class="text-xl">📊</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <div>
+                    <div class="text-xs text-purple-300/50 nav-link mb-1">FLOWS/SEC</div>
+                    <div class="display-font text-2xl font-bold text-indigo-300 mono-num" id="flowsPerSec">0</div>
+                </div>
+                <div>
+                    <div class="text-xs text-purple-300/50 nav-link mb-1">PACKETS/SEC</div>
+                    <div class="display-font text-2xl font-bold text-purple-300 mono-num" id="packetsPerSec">0</div>
+                </div>
+            </div>
+            <div class="h-11 rounded-lg relative overflow-hidden" style="background: rgba(168,85,247,0.06); border: 1px solid rgba(168,85,247,0.15);">
+                <div class="absolute inset-0 flex items-end justify-around p-1 gap-0.5">
+                    <div class="flex-1 rounded-t mini-bar" id="bar0" style="height: 30%; background: linear-gradient(to top, #818cf8, #a5b4fc); opacity: 0.75;"></div>
+                    <div class="flex-1 rounded-t mini-bar" id="bar1" style="height: 45%; background: linear-gradient(to top, #a855f7, #c084fc); opacity: 0.75;"></div>
+                    <div class="flex-1 rounded-t mini-bar" id="bar2" style="height: 60%; background: linear-gradient(to top, #7c3aed, #a855f7); opacity: 0.75;"></div>
+                    <div class="flex-1 rounded-t mini-bar" id="bar3" style="height: 35%; background: linear-gradient(to top, #818cf8, #a5b4fc); opacity: 0.75;"></div>
+                    <div class="flex-1 rounded-t mini-bar" id="bar4" style="height: 50%; background: linear-gradient(to top, #a855f7, #c084fc); opacity: 0.75;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass rounded-xl p-6 card-hover glow-amber">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xs nav-link tracking-widest">THREAT LEVEL</h3>
+                <span class="text-xl">🎯</span>
+            </div>
+            <div class="heading-font text-2xl font-bold mb-3" id="threatLevelLabel" style="color:#34d399;">LOW</div>
+            <div class="flex gap-1.5 mb-3" id="threatSegments">
+                <div class="segment"></div><div class="segment"></div><div class="segment"></div><div class="segment"></div><div class="segment"></div>
+            </div>
+            <div class="text-xs text-purple-300/50 nav-link">
+                CONFIDENCE: <span class="font-bold text-purple-300" id="confidence">0%</span>
+            </div>
+        </div>
+
+        <div class="glass rounded-xl p-6 card-hover glow-purple">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xs nav-link tracking-widest">DATA FEED & TRIGGERS</h3>
+                <span class="text-xl">📡</span>
+            </div>
+            <div class="display-font text-2xl font-bold text-purple-300 mb-3" id="eventCount">0</div>
+            <div class="space-y-2 max-h-24 overflow-y-auto scrollbar-custom" id="eventsList">
+                <div class="text-xs text-purple-300/40">No incoming data</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ATTACK FORECAST TREE ===== -->
+    <div class="glass-strong rounded-xl p-6 glow-purple">
+        <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+            <h3 class="text-sm nav-link tracking-widest">🚀 ATTACK FORECAST TREE</h3>
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1.5 text-xs nav-link"><span class="w-2 h-2 rounded-full" style="background:#818cf8; box-shadow:0 0 6px rgba(129, 140, 248,0.7);"></span>Most Likely Path</span>
+                <span class="flex items-center gap-1.5 text-xs nav-link"><span class="w-2 h-2 rounded-full" style="background:rgba(168,85,247,0.5);"></span>Alternative Branch</span>
+                <span class="badge bg-purple-500/15 text-purple-300">AI PREDICTION</span>
+            </div>
+        </div>
+        <p class="text-xs text-purple-300/40 mb-4">Multi-generation probabilistic forecast — each branch represents a distinct possible attack evolution. Scroll to explore · hover a state to trace its full path.</p>
+
+        <div id="forecastTreeScroll" class="scrollbar-custom">
+            <div id="forecastTreeCanvas">
+                <svg id="forecastTreeSvg"></svg>
+            </div>
+        </div>
+
+        <div id="treeInfoPanel" class="mt-4 p-3 rounded-lg text-xs glass" style="border:1px solid rgba(168,85,247,0.2);">
+            <span class="text-purple-300/50" id="treeInfoText">Hover over any predicted state above to trace its attack path and view details.</span>
+        </div>
+    </div>
+
+    <!-- ===== AI ATTACK PREDICTION + QUICK STATS ===== -->
+    <div id="prediction" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="lg:col-span-2 glass-strong rounded-xl p-7 glow-purple">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-sm nav-link tracking-widest">⚡ AI ATTACK PREDICTION</h3>
+                <span class="badge bg-purple-500/15 text-purple-300 pulse-glow">LIVE</span>
+            </div>
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="glass rounded-lg p-4">
+                    <div class="text-xs text-purple-300/50 nav-link mb-2">CURRENT STAGE</div>
+                    <div class="heading-font text-xl font-bold text-white" id="currentStage">Normal Traffic</div>
+                    <div class="mt-2 text-xs text-purple-300/40" id="stageDescription">Monitoring active streams</div>
+                </div>
+                <div class="glass rounded-lg p-4 flex flex-col items-center justify-center">
+                    <div class="text-2xl mb-1 text-indigo-400">→</div>
+                    <div class="display-font text-2xl font-bold text-indigo-300" id="probValue">0%</div>
+                </div>
+                <div class="glass rounded-lg p-4" style="border-color: rgba(196,145,255,0.4);">
+                    <div class="text-xs text-purple-300 nav-link mb-2">PREDICTED NEXT</div>
+                    <div class="heading-font text-xl font-bold text-glow-purple" style="color: var(--purple-bright);" id="predictedStage">Benign</div>
+                    <div class="mt-2 text-xs text-purple-300/60" id="predictedTime">0% likely</div>
+                </div>
+            </div>
+            <div id="probabilitySection">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-bold text-purple-200 heading-font">TRANSITION PROBABILITY</span>
+                    <span class="display-font text-lg font-bold text-indigo-300" id="probPercentage">0%</span>
+                </div>
+                <div class="w-full h-3.5 rounded-full overflow-hidden" style="background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.2);">
+                    <div id="probBar" class="h-full rounded-full bar-fill" style="width:0%; background: linear-gradient(90deg, #7c3aed, #a855f7, #818cf8); box-shadow: 0 0 12px rgba(168,85,247,0.6);"></div>
+                </div>
+            </div>
+            <div id="forecastAlert" class="mt-4 p-4 rounded-lg slide-up" style="background: rgba(124,58,237,0.12); border: 1px solid rgba(168,85,247,0.3);">
+                <p class="text-sm text-purple-100 flex gap-2"><span>💡</span><span id="forecastText">Analyzing pattern...</span></p>
+            </div>
+        </div>
+        <div class="glass rounded-xl p-6 glow-cyan flex flex-col gap-4">
+            <h3 class="text-xs nav-link tracking-widest mb-1">📊 QUICK STATS</h3>
+            <div class="flex justify-between items-center pb-3 border-b border-purple-500/10">
+                <span class="text-xs text-purple-300/50 nav-link">ANOMALY SCORE</span>
+                <span class="display-font text-lg font-bold text-rose-400" id="anomalyScore">0.0</span>
+            </div>
+            <div class="flex justify-between items-center pb-3 border-b border-purple-500/10">
+                <span class="text-xs text-purple-300/50 nav-link">DETECTION CONF</span>
+                <span class="display-font text-lg font-bold text-indigo-300" id="detectionConf">0%</span>
+            </div>
+            <div class="flex justify-between items-center pb-3 border-b border-purple-500/10">
+                <span class="text-xs text-purple-300/50 nav-link">ACTIVE MITRE STAGE</span>
+                <span class="display-font text-xs font-bold text-purple-300 text-right max-w-[150px] truncate" id="mitreActiveStage">Reconnaissance</span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-xs text-purple-300/50 nav-link">LAST UPDATE</span>
+                <span class="text-xs mono-num text-purple-300/70" id="lastUpdate">—</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MITRE ATT&CK TABLE ===== -->
+    <div id="mitre" class="glass-strong rounded-xl p-6 glow-cyan">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm nav-link tracking-widest">🎯 MITRE ATT&CK ANALYSIS</h3>
+            <span class="badge bg-indigo-500/15 text-indigo-300">ACTIVE TACTIC HIGHLIGHTED</span>
+        </div>
+        <div class="overflow-x-auto scrollbar-custom">
+            <table class="mitre-table">
+                <thead>
+                    <tr><th>Tactic ID</th><th>Tactic</th><th>Technique</th><th>Description</th></tr>
+                </thead>
+                <tbody id="mitreTableBody">
+                    <tr data-tactic="Reconnaissance">
+                        <td class="display-font text-purple-300 font-bold">TA0043</td>
+                        <td class="font-semibold text-white">Reconnaissance</td>
+                        <td class="text-indigo-300">Active Scanning</td>
+                        <td class="text-purple-200/60">Adversary scans the network to gather information about hosts, ports and services for future targeting.</td>
+                    </tr>
+                    <tr data-tactic="Initial Access">
+                        <td class="display-font text-purple-300 font-bold">TA0001</td>
+                        <td class="font-semibold text-white">Initial Access</td>
+                        <td class="text-indigo-300">Exploit Public-Facing Application</td>
+                        <td class="text-purple-200/60">Attacker exploits a vulnerability in an internet-facing service to gain an initial foothold in the network.</td>
+                    </tr>
+                    <tr data-tactic="Lateral Movement">
+                        <td class="display-font text-purple-300 font-bold">TA0008</td>
+                        <td class="font-semibold text-white">Lateral Movement</td>
+                        <td class="text-indigo-300">Remote Services</td>
+                        <td class="text-purple-200/60">Compromised credentials are used to move across internal hosts via remote access services (SSH, RDP, SMB).</td>
+                    </tr>
+                    <tr data-tactic="Command and Control">
+                        <td class="display-font text-purple-300 font-bold">TA0011</td>
+                        <td class="font-semibold text-white">Command and Control</td>
+                        <td class="text-indigo-300">Application Layer Protocol</td>
+                        <td class="text-purple-200/60">Attacker establishes a covert channel blended with normal application traffic to remotely control the compromised system.</td>
+                    </tr>
+                    <tr data-tactic="Exfiltration">
+                        <td class="display-font text-purple-300 font-bold">TA0010</td>
+                        <td class="font-semibold text-white">Exfiltration</td>
+                        <td class="text-indigo-300">Exfiltration Over C2 Channel</td>
+                        <td class="text-purple-200/60">Sensitive data is compressed and extracted from the network through the existing command-and-control channel.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== NETWORK TRAFFIC REPORT GRAPH ===== -->
+    <div id="traffic-report" class="glass rounded-xl p-6 card-hover glow-purple">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xs nav-link tracking-widest">📈 NETWORK TRAFFIC REPORT</h3>
+            <div class="flex gap-3 text-xs nav-link">
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full" style="background:#818cf8;"></span>FLOWS</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full" style="background:#a855f7;"></span>PACKETS</span>
+            </div>
+        </div>
+        <div class="chart-container"><canvas id="trafficReportChart"></canvas></div>
+    </div>
+</main>
+
+<footer class="glass border-t border-purple-500/10 py-6 text-center">
+    <div class="flex items-center justify-center gap-2 mb-2">
+        <span class="text-lg">🛡️</span>
+        <p class="heading-font text-sm text-purple-200/70 tracking-wide">NetForeSight — AI-BASED NETWORK ATTACK FORECASTING</p>
+    </div>
+    <p class="text-xs text-purple-300/40 mt-1">Smart India Hackathon · Problem Statement PS26153</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
